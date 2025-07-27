@@ -62,5 +62,12 @@ pipeline {
                 '''
             }
         }
+        stage('Terraform validate') {
+            steps {
+                sh '''
+                    terraform validate
+                '''
+            }
+        }
     }
 }
