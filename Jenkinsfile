@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'node'
-    }
+    agent any
 
     environment {
         SONAR_TOKEN = credentials('sonar-token') // Make sure this is credential ID exists in Jenkins UI
