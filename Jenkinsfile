@@ -1,45 +1,52 @@
-pipeline{
-    agent{
-        label "node"
+pipeline {
+    agent {
+        label 'node'
     }
-    stages{
-        stage("Git Checkout") {
-            steps{
+
+    tools {
+        // Ensure the tool name matches the one configured in Jenkins under Global Tool Configuration
+        sonarScanner 'sonarqube'
+    }
+
+    environment {
+        SONAR_TOKEN = credentials('sonar-token') // Reference to the Jenkins credentials ID
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
                 git branch: 'main', url: 'https://github.com/luckysuie/custompolicy.git'
             }
         }
-        stage('sonarqube analysis') {
-            environment {
-                SCANNER_HOME = tool 'sonarqube' // Assuming 'sonarqube' is the name of the SonarQube scanner tool configured in Jenkins
-                SONAR_TOKEN = credentials('sonar-token') // Assuming 'sonar-token' is the ID of the SonarQube token credential configured in Jenkins
-            }
+
+        stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarserver') { // Assuming 'sonarserver' is the name of the SonarQube server configured in Jenkins
-                sh '''
-                    ${SCANNER_HOME}/bin/sonar-scanner \
-                    -Dsonar.projectKey=custompolicy \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=http://172.190.143.248:9000 \
-                    -Dsonar.login=${SONAR_TOKEN} \
-                '''
+                withSonarQubeEnv('sonarserver') { // 'sonarserver' should match your configured SonarQube server name in Jenkins
+                    sh '''
+                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                        -Dsonar.projectKey=jenkins1234 \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://172.190.143.248:9000 \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    '''
                 }
             }
-            stage('publish results') {
-                steps {
-                    echo 'Publishing SonarQube results...'
-                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                        sh '''
-                            ${SCANNER_HOME}/bin/sonar-scanner \
-                            -Dsonar.projectKey=custompolicy \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://172.190.143.248:9000 \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.qualitygate.wait=false 
-                        '''
-                    }
+        }
+
+        stage('Publish Results (Optional)') {
+            steps {
+                echo 'Publishing SonarQube results...'
+                withSonarQubeEnv('sonarserver') {
+                    sh '''
+                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                        -Dsonar.projectKey=jenkins1234 \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://172.190.143.248:9000 \
+                        -Dsonar.login=${SONAR_TOKEN} \
+                        -Dsonar.qualitygate.wait=false
+                    '''
                 }
             }
         }
     }
-
 }
