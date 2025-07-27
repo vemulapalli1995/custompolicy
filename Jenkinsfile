@@ -13,9 +13,6 @@ pipeline {
         SONAR_TOKEN = credentials('sonar-token')
     }
 
-    triggers {
-        githubPush()
-    }
 
     stages {
 
