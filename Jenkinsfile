@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('Publish Results (Optional)') {
+        stage('Publish SonarQube Results') {
             steps {
                 echo 'Re-running scanner to publish results without quality gate blocking...'
                 withSonarQubeEnv('sonarserver') {
