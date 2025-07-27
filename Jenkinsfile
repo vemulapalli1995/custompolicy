@@ -4,7 +4,7 @@ pipeline {
     }
 
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // Make sure this is credential ID exists in Jenkins
+        SONAR_TOKEN = credentials('sonar-token') // Make sure this is credential ID exists in Jenkins UI
     }
 
     stages {
