@@ -3,13 +3,8 @@ pipeline {
         label 'node'
     }
 
-    tools {
-        // Ensure the tool name matches the one configured in Jenkins under Global Tool Configuration
-        sonarScanner 'sonarqube'
-    }
-
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // Reference to the Jenkins credentials ID
+        SONAR_TOKEN = credentials('sonar-token') // Make sure this credential ID exists in Jenkins
     }
 
     stages {
@@ -21,7 +16,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarserver') { // 'sonarserver' should match your configured SonarQube server name in Jenkins
+                withSonarQubeEnv('sonarserver') { // 'sonarserver' must be the configured name in Jenkins → SonarQube servers
                     sh '''
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
                         -Dsonar.projectKey=jenkins1234 \
@@ -35,7 +30,7 @@ pipeline {
 
         stage('Publish Results (Optional)') {
             steps {
-                echo 'Publishing SonarQube results...'
+                echo 'Re-running scanner to publish results without quality gate blocking...'
                 withSonarQubeEnv('sonarserver') {
                     sh '''
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
