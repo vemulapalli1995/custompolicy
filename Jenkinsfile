@@ -11,7 +11,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/luckysuie/custompolicy.git'
             }
         }
-
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarserver') { // 'sonarserver' must be the cofigured name in Jenkins → SonarQube servers
@@ -25,7 +24,6 @@ pipeline {
                 }
             }
         }
-
         stage('Publish SonarQube Results') {
             steps {
                 echo 'Re-running scanner to publish results without quality gate blocking...'
