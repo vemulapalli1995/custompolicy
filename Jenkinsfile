@@ -21,7 +21,7 @@ pipeline {
 
         stage('Git Checkout') {
             steps {
-                git branch: 'main', url: 'hhttps://github.com/luckysuie/custompolicy.git'
+                git branch: 'main', url: 'https://github.com/luckysuie/custompolicy.git'
             }
         }
 
