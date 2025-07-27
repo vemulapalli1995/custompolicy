@@ -1,8 +1,9 @@
 pipeline {
     agent any
+
     environment {
-        SONAR_TOKEN = credentials('sonar-token') // Make sure this is credential ID exists in Jenkins UI
-        SONAR_SCANNER_HOME = tool 'sonarqube' // Ensure this tool is configured in Jenkins
+        SONAR_TOKEN = credentials('sonar-token')         // Ensure this credential exists
+        SONAR_SCANNER_HOME = tool 'sonarqube'            // Must match name configured in Global Tool Configuration
     }
 
     stages {
@@ -11,9 +12,10 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/luckysuie/custompolicy.git'
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarserver') { // 'sonarserver' must be the cofigured name in Jenkins → SonarQube servers
+                withSonarQubeEnv('sonarserver') {         // 'sonarserver' must be configured under SonarQube servers
                     sh '''
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
                         -Dsonar.projectKey=jenkins1234 \
@@ -24,6 +26,7 @@ pipeline {
                 }
             }
         }
+
         stage('Publish SonarQube Results') {
             steps {
                 echo 'Re-running scanner to publish results without quality gate blocking...'
@@ -38,16 +41,17 @@ pipeline {
                     '''
                 }
             }
+        }
+
         stage('Login to Azure') {
-                steps {
-                    withcredentials([
-                        usernamePassword(credentialsId: 'azure-sp', passwordVariable: 'AZURE_PASSWORD', usernameVariable: 'AZURE_APP_ID'),
-                        string(credentialsId: 'azure-tenant', variable: 'AZURE_TENANT')
-                    ]) {
-                        sh '''
-                            az login --service-principal -u $AZURE_APP_ID -p $AZURE_PASSWORD --tenant $AZURE_TENANT
-                        '''
-                    }
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'azure-sp', usernameVariable: 'AZURE_APP_ID', passwordVariable: 'AZURE_PASSWORD'),
+                    string(credentialsId: 'azure-tenant', variable: 'AZURE_TENANT')
+                ]) {
+                    sh '''
+                        az login --service-principal -u $AZURE_APP_ID -p $AZURE_PASSWORD --tenant $AZURE_TENANT
+                    '''
                 }
             }
         }
