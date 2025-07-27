@@ -40,7 +40,7 @@ pipeline {
                     '''
                 }
             }
-            stage('Login to Azure') {
+        stage('Login to Azure') {
                 steps {
                     withcredentials([
                         usernamePassword(credentialsId: 'azure-sp', passwordVariable: 'AZURE_PASSWORD', usernameVariable: 'AZURE_APP_ID'),
