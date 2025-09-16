@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR_TOKEN = credentials('sonar-token')         // Ensure this credential exists
+        SONAR_TOKEN = f8591764523c3ea1b08c4ea766173fb9541639ad         // Ensure this credential exists
         SONAR_SCANNER_HOME = tool 'sonarqube'            // Must match name configured in Global Tool Configuration
     }
 
