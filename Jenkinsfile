@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/luckysuie/custompolicy.git'
+                git branch: 'main', url: 'https://github.com/vemulapalli1995/custompolicy'
             }
         }
 
@@ -18,9 +18,9 @@ pipeline {
                 withSonarQubeEnv('sonarserver') {         // 'sonarserver' must be configured under SonarQube servers
                     sh '''
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
-                        -Dsonar.projectKey=jenkins1234 \
+                        -Dsonar.projectKey=myprof-projects_project10 \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://172.190.143.248:9000 \
+                        -Dsonar.host.url=http://4.205.120.86:9000 \
                         -Dsonar.login=${SONAR_TOKEN}
                     '''
                 }
@@ -33,9 +33,9 @@ pipeline {
                 withSonarQubeEnv('sonarserver') {
                     sh '''
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
-                        -Dsonar.projectKey=jenkins1234 \
+                        -Dsonar.projectKey=myprof-projects_project10 \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://172.190.143.248:9000 \
+                        -Dsonar.host.url=http://4.205.120.86:9000 \
                         -Dsonar.login=${SONAR_TOKEN} \
                         -Dsonar.qualitygate.wait=false
                     '''
